@@ -1,0 +1,22 @@
+.search-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.top-row {
+  order: 1; /* Order the top row first */
+}
+
+.middle-row {
+  display: flex;
+  justify-content: space-between; /* Align filters horizontally with space between them */
+  align-items: center;
+  padding: 10px; /* Add padding for spacing */
+  order: 2; /* Order the middle row second */
+}
+
+.bottom-row {
+  flex: 1; /* Take up remaining vertical space */
+  order: 3; /* Order the bottom row last */
+}

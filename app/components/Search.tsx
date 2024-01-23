@@ -7,7 +7,11 @@ import {
   type FormProps,
 } from '@remix-run/react';
 import {Image, Money, Pagination} from '@shopify/hydrogen';
-import React, {useRef, useEffect} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import SearchFilter from './SearchFilter';
+import {Aside} from '~/components/Aside';
+import SearchFilter2 from './sef';
 
 import type {
   PredictiveProductFragment,
@@ -64,10 +68,12 @@ export const NO_PREDICTIVE_SEARCH_RESULTS: NormalizedPredictiveSearchResults = [
   {type: 'articles', items: []},
 ];
 
-export function SearchForm({searchTerm}: {searchTerm: string}) {
+export function SearchForm({searchTerm, showSearchButton, value1, value2}: {searchTerm: string, showSearchButton?: boolean, value1: number, value2: number }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [vendorFilters, setVendorFilters] = useState<string[]>([]);
+  const [typeFilters, setTypeFilters] = useState<string[]>([]);
+  const navigate = useNavigate();
 
-  // focus the input when cmd+k is pressed
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'k' && event.metaKey) {
@@ -87,20 +93,121 @@ export function SearchForm({searchTerm}: {searchTerm: string}) {
     };
   }, []);
 
+  const handleFilterChange = (
+    filterName: string,
+    value: string,
+    isChecked: boolean,
+    filters: string[],
+  ) => {
+    let updatedFilters: string[] = [];
+    if (isChecked) {
+      updatedFilters = [...filters, value];
+    } else {
+      updatedFilters = filters.filter((filter) => filter !== value);
+    }
+
+    switch (filterName) {
+      case 'vendor':
+        setVendorFilters(updatedFilters);
+        break;
+      case 'type':
+        setTypeFilters(updatedFilters);
+        break;
+      default:
+        break;
+    }
+
+    const queryParams = new URLSearchParams(window.location.search);
+
+
+    queryParams.delete(filterName);
+
+    if (updatedFilters.length > 0) {
+      queryParams.set(filterName, updatedFilters.join('|'));
+    }
+
+    if (searchTerm) {
+      queryParams.set('q', searchTerm); 
+    }
+
+    const newSearchParams = queryParams.toString();
+    navigate(`/search?${newSearchParams}`, {
+      replace: true,
+    });
+  };
+
+  const handleSubmit = () => {
+    const queryParams = new URLSearchParams(window.location.search);
+    if (searchTerm) {
+      queryParams.set('q', searchTerm); 
+    }
+    const newSearchParams = queryParams.toString();
+    navigate(`/search?${newSearchParams}`, {
+      replace: true,
+    });
+  };
+  
+
   return (
-    <Form method="get">
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '30px' }}>
+      
+      <div style={{ marginLeft: '10px' }}>
+      <Form action="/search" method="get" style={{ display: 'flex', alignItems: 'center' }}>
       <input
+        id="search"
         defaultValue={searchTerm}
         name="q"
-        placeholder="Search…"
+        placeholder="Type your search here..."  // Adjust the placeholder text
         ref={inputRef}
         type="search"
+        style={{
+          border: 'none',
+          outline: 'none',
+          padding: '5px',
+          borderBottom: '1px solid #ccc',
+          background: 'transparent',
+          fontSize: '30px',  // Adjust the font size
+          fontWeight: 'bold',  // Adjust the font weight
+          color: '#333',   // Set the font color to grey
+          marginRight: '10px'  // Add some margin between input and button
+        }}
       />
-      &nbsp;
-      <button type="submit">Search</button>
+      {showSearchButton && <button type="submit" onClick={handleSubmit} style={{ background: 'black', color: 'white', padding: '7px 15px', cursor: 'pointer', borderRadius:'3px' }}>Search</button>}
     </Form>
+    
+      </div>
+
+      <div style={{ display: 'flex', gap: '20px', marginLeft: '20px'}}>
+      <div>
+      <div style={{ fontSize: '60px', fontWeight: 'bold', textDecoration: 'underline' }}>
+      <p>PRODUCTS ({value1})</p>
+      </div>
+      </div>
+      <div>
+      <div style={{ fontSize: '30px', fontWeight: 'bold', textDecoration: 'underline' }}>
+      <p>ARTICLES ({value2})</p>
+
+      </div>
+      </div>
+    </div>
+
+    <div style={{ marginLeft: '10px', background: '#f0f0f0', width: '147vh', padding: '10px' }}>
+      <SearchFilter handleFilterChange={handleFilterChange} />
+    </div>
+    {/* FilterAside() */}
+
+
+
+
+    <Aside id="filter-aside" heading="filter">
+          <SearchFilter2 handleFilterChange={handleFilterChange} />
+        </Aside>  
+
+
+    </div>
   );
 }
+  
 
 export function SearchResults({
   results,
@@ -266,8 +373,6 @@ export function PredictiveSearchForm({
     );
   }
 
-  // ensure the passed input has a type of search, because SearchResults
-  // will select the element based on the input
   useEffect(() => {
     inputRef?.current?.setAttribute('type', 'search');
   }, []);

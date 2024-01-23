@@ -1,112 +1,92 @@
 import {NavLink} from '@remix-run/react';
-import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
-import {useRootLoaderData} from '~/root';
+import CopyrightBar from '../components/copyrightBar';
 
-export function Footer({
-  menu,
-  shop,
-}: FooterQuery & {shop: HeaderQuery['shop']}) {
+import MailingList from '~/components/mailingList';
+
+/**
+ * @param {FooterQuery & {shop: HeaderQuery['shop']}}
+ */
+export function Footer() {
   return (
-    <footer className="footer">
-      {menu && shop?.primaryDomain?.url && (
-        <FooterMenu menu={menu} primaryDomainUrl={shop.primaryDomain.url} />
-      )}
+    <footer className="footer" style={{ backgroundColor: 'white' }}>
+      <div
+        style={{
+          color: 'black',
+          display: 'flex',
+          marginLeft: '70px',
+          gap: '50px',
+        }}
+      >
+        <FooterMenuSection title="Company Info" links={companyInfoLinks} />
+        <FooterMenuSection title="Support" links={supportLinks} />
+        <FooterMenuSection title="Legal Policy" links={legalPolicyLinks} />
+        <MailingList />
+      </div>
+      <CopyrightBar />
     </footer>
   );
 }
 
-function FooterMenu({
-  menu,
-  primaryDomainUrl,
-}: {
-  menu: FooterQuery['menu'];
-  primaryDomainUrl: HeaderQuery['shop']['primaryDomain']['url'];
-}) {
-  const {publicStoreDomain} = useRootLoaderData();
+/**
+ * @param {{
+ *   title: string;
+ *   links: { id: string; title: string; url: string }[];
+ * }}
+ */
+interface LinkItem {
+  id: string;
+  title: string;
+  url: string;
+}
 
+interface FooterMenuSectionProps {
+  title: string;
+  links: LinkItem[];
+}
+
+function FooterMenuSection({
+  title,
+  links,
+}: FooterMenuSectionProps): JSX.Element {
   return (
-    <nav className="footer-menu" role="navigation">
-      {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
-        if (!item.url) return null;
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        const isExternal = !url.startsWith('/');
-        return isExternal ? (
-          <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
-            {item.title}
-          </a>
-        ) : (
-          <NavLink
-            end
-            key={item.id}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
-        );
-      })}
-    </nav>
+    <div className="footer bg-white pt-4">
+      <div
+        className="flex flex-col"
+        style={{alignItems: 'center', textAlign: 'center'}}
+      >
+        <h4 style={{margin: '0'}}>{title}</h4>
+        <nav
+          className="footer-menu"
+          role="navigation"
+          style={{flexDirection: 'column'}}
+        >
+          {links.map((item: LinkItem) => (
+            <NavLink key={item.id} end prefetch="intent" to={item.url}>
+              <h5 style={{margin: '0', color: 'black'}}>{item.title}</h5>
+            </NavLink>
+          ))}
+        </nav>
+      </div>
+    </div>
   );
 }
 
-const FALLBACK_FOOTER_MENU = {
-  id: 'gid://shopify/Menu/199655620664',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461633060920',
-      resourceId: 'gid://shopify/ShopPolicy/23358046264',
-      tags: [],
-      title: 'Privacy Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/privacy-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633093688',
-      resourceId: 'gid://shopify/ShopPolicy/23358013496',
-      tags: [],
-      title: 'Refund Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/refund-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633126456',
-      resourceId: 'gid://shopify/ShopPolicy/23358111800',
-      tags: [],
-      title: 'Shipping Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/shipping-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633159224',
-      resourceId: 'gid://shopify/ShopPolicy/23358079032',
-      tags: [],
-      title: 'Terms of Service',
-      type: 'SHOP_POLICY',
-      url: '/policies/terms-of-service',
-      items: [],
-    },
-  ],
-};
+const companyInfoLinks = [
+  {id: 'link1-1', title: 'About Us', url: 'header'},
+  {id: 'link1-2', title: 'FAQs', url: 'header'},
+  {id: 'link1-3', title: 'We are Hiring', url: 'header'},
+  {id: 'link1-3', title: 'Blog', url: 'header'},
+];
 
-function activeLinkStyle({
-  isActive,
-  isPending,
-}: {
-  isActive: boolean;
-  isPending: boolean;
-}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'white',
-  };
-}
+const supportLinks = [
+  {id: 'link2-1', title: 'Live Agent', url: 'header'},
+  {id: 'link2-2', title: 'Email', url: 'header'},
+  {id: 'link2-3', title: 'Hours of Operation', url: 'header'},
+];
+
+const legalPolicyLinks = [
+  {id: 'link3-1', title: 'Affiliate Program', url: 'header'},
+  {id: 'link3-2', title: 'Search', url: 'header'},
+  {id: 'link3-3', title: 'Terms of Service', url: 'header'},
+  {id: 'link3-3', title: 'Refund Policy', url: 'header'},
+];

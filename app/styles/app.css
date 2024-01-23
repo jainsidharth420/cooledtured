@@ -1,3 +1,42 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* GOOGLE FONT - MONTSERRAT */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+
+/**************************/
+/* CSS RESET */
+/**************************/
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+*:focus{
+    outline: none;
+}
+/* Remove default margin */
+* {
+    margin: 0;
+    padding: 0;
+    font: inherit;
+}
+/* Set core root defaults */
+html:focus-within {
+    scroll-behavior: smooth;
+}
+
+html, 
+body{
+    height: 100%; 
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
 :root {
   --aside-width: 400px;
   --cart-aside-summary-height-with-discount: 300px;
@@ -177,7 +216,6 @@ aside li {
 * --------------------------------------------------
 */
 .footer {
-  background: var(--color-dark);
   margin-top: auto;
 }
 
@@ -193,9 +231,6 @@ aside li {
   padding: 1rem;
 }
 
-.footer-menu a {
-  color: var(--color-light);
-}
 
 /*
 * --------------------------------------------------
@@ -470,4 +505,297 @@ aside li {
 
 .account-logout {
   display: inline-block;
+}
+
+/*
+* --------------------------------------------------
+* Search
+* --------------------------------------------------
+*/
+
+
+.search-page {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* Adjust the proportion of columns as needed */
+  gap: 20px; /* Adjust the gap between columns */
+}
+
+/* Styles for the left column (search form) */
+.search-page__left {
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+}
+
+/* Heading in the left column */
+.search-page__left h1 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+/* Search input and button */
+.search-page__left input[type='search'] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.search-page__left button[type='submit'] {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.search-page__left button[type='submit']:hover {
+  background-color: #0056b3;
+}
+
+/* Styles for the right column (search results) */
+.search-page__right {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles for search results */
+.search-page__right .search-results {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.search-page__right .search-results li {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+/* Styles for No Search Results message */
+.search-page__right .no-results {
+  font-style: italic;
+  color: #777;
+}
+
+/* Media query for responsiveness */
+@media (max-width: 768px) {
+  .search-page {
+    grid-template-columns: 1fr; /* Display as a single column on small screens */
+  }
+
+  .search-page__right {
+    margin-top: 20px; /* Add some space between sections on small screens */
+  }
+}
+
+/* Checkbox Styles */
+.checkbox-select {
+  display: none;
+  margin-bottom: 10px;
+}
+
+.checkbox-select.show {
+  display: block;
+}
+
+.checkbox-select input[type='checkbox'] {
+  margin-bottom: 5px;
+}
+
+.checkbox-select label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.checkbox-select input[type='checkbox'] {
+  margin-right: 8px;
+}
+
+.checkbox-select input[type='checkbox']:checked + label {
+  font-weight: bold;
+  color: #007bff; /* Change the color as needed */
+}
+
+.checkbox-select input[type='checkbox'][id^='all'] + label {
+  font-weight: bold;
+}
+
+.checkbox-select input[type='checkbox'] + label {
+  margin-left: 20px;
+}
+
+/* Filter Toggle Styles */
+.filter-toggle {
+  background-color: #f0f0f0;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.filter-toggle:hover {
+  background-color: #e0e0e0;
+}
+
+.filter-toggle[aria-expanded="true"] {
+  background-color: #ddd;
+}
+
+
+/*
+* --------------------------------------------------
+* Search
+* --------------------------------------------------
+*/
+
+
+.search-page {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* Adjust the proportion of columns as needed */
+  gap: 20px; /* Adjust the gap between columns */
+}
+
+/* Styles for the left column (search form) */
+.search-page__left {
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+}
+
+/* Heading in the left column */
+.search-page__left h1 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+/* Search input and button */
+.search-page__left input[type='search'] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.search-page__left button[type='submit'] {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.search-page__left button[type='submit']:hover {
+  background-color: #0056b3;
+}
+
+/* Styles for the right column (search results) */
+.search-page__right {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles for search results */
+.search-page__right .search-results {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.search-page__right .search-results li {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+/* Styles for No Search Results message */
+.search-page__right .no-results {
+  font-style: italic;
+  color: #777;
+}
+
+/* Media query for responsiveness */
+@media (max-width: 768px) {
+  .search-page {
+    grid-template-columns: 1fr; /* Display as a single column on small screens */
+  }
+
+  .search-page__right {
+    margin-top: 20px; /* Add some space between sections on small screens */
+  }
+}
+
+/* Checkbox Styles */
+.checkbox-select {
+  display: none;
+  margin-bottom: 10px;
+}
+
+.checkbox-select.show {
+  display: block;
+}
+
+.checkbox-select input[type='checkbox'] {
+  margin-bottom: 5px;
+}
+
+.checkbox-select label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.checkbox-select input[type='checkbox'] {
+  margin-right: 8px;
+}
+
+.checkbox-select input[type='checkbox']:checked + label {
+  font-weight: bold;
+  color: #007bff; /* Change the color as needed */
+}
+
+.checkbox-select input[type='checkbox'][id^='all'] + label {
+  font-weight: bold;
+}
+
+.checkbox-select input[type='checkbox'] + label {
+  margin-left: 20px;
+}
+
+/* Filter Toggle Styles */
+.filter-toggle {
+  background-color: #f0f0f0;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.filter-toggle:hover {
+  background-color: #e0e0e0;
+}
+
+.filter-toggle[aria-expanded="true"] {
+  background-color: #ddd;
 }

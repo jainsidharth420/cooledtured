@@ -83,7 +83,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   const footerPromise = storefront.query(FOOTER_QUERY, {
     cache: storefront.CacheLong(),
     variables: {
-      footerMenuHandle: 'footer', // Adjust to your footer menu handle
+      footerMenuHandle: 'Information', // Adjust to your footer menu handle
     },
   });
 
@@ -91,7 +91,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   const headerPromise = storefront.query(HEADER_QUERY, {
     cache: storefront.CacheLong(),
     variables: {
-      headerMenuHandle: 'main-menu', // Adjust to your header menu handle
+      headerMenuHandle: '2023', // Adjust to your header menu handle
     },
   });
 

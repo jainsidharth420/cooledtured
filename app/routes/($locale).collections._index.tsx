@@ -1,23 +1,30 @@
-import {useLoaderData, Link} from '@remix-run/react';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Pagination, getPaginationVariables, Image} from '@shopify/hydrogen';
-import type {CollectionFragment} from 'storefrontapi.generated';
+import {useLoaderData, Link} from '@remix-run/react'; // useLoaderData for fetching data, Link for navigation
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen'; // json for server response, LoaderFunctionArgs for typing loader arguments
+import {Pagination, getPaginationVariables, Image} from '@shopify/hydrogen'; // Components and utility from Hydrogen
+import type {CollectionFragment} from 'storefrontapi.generated'; // TypeScript type for CollectionFragment
 
+// Server-side loader function to fetch data
 export async function loader({context, request}: LoaderFunctionArgs) {
+  // Get pagination variables from the request
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 4,
+    pageBy: 100, // Number of items per page
   });
 
+  // Fetch collections data using the GraphQL query and pagination variables
   const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
     variables: paginationVariables,
   });
 
+  // Return the fetched data as JSON
   return json({collections});
 }
 
+// React component to display collections
 export default function Collections() {
+  // Fetch collections data loaded by the loader function
   const {collections} = useLoaderData<typeof loader>();
 
+  // Render the collections with Pagination
   return (
     <div className="collections">
       <h1>Collections</h1>
@@ -38,6 +45,7 @@ export default function Collections() {
   );
 }
 
+// Component to render a grid of collections
 function CollectionsGrid({collections}: {collections: CollectionFragment[]}) {
   return (
     <div className="collections-grid">
@@ -52,6 +60,7 @@ function CollectionsGrid({collections}: {collections: CollectionFragment[]}) {
   );
 }
 
+// Component to render a single collection item
 function CollectionItem({
   collection,
   index,
@@ -79,6 +88,7 @@ function CollectionItem({
   );
 }
 
+// GraphQL query for fetching collections
 const COLLECTIONS_QUERY = `#graphql
   fragment Collection on Collection {
     id
@@ -117,4 +127,4 @@ const COLLECTIONS_QUERY = `#graphql
       }
     }
   }
-` as const;
+` as const; // Marking the query as a constant

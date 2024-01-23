@@ -1,5 +1,8 @@
 import {Await} from '@remix-run/react';
 import {Suspense} from 'react';
+import React, { useState } from 'react';
+
+
 import type {
   CartApiQueryFragment,
   FooterQuery,
@@ -14,6 +17,7 @@ import {
   PredictiveSearchResults,
 } from '~/components/Search';
 
+import Social from './Social';
 export type LayoutProps = {
   cart: Promise<CartApiQueryFragment | null>;
   children?: React.ReactNode;
@@ -33,17 +37,31 @@ export function Layout({
     <>
       <CartAside cart={cart} />
       <SearchAside />
-      <MobileMenuAside menu={header?.menu} shop={header?.shop} />
-      {header && <Header header={header} cart={cart} isLoggedIn={isLoggedIn} />}
-      <main>{children}</main>
+      {/* <FilterAside /> */}
+      <MobileMenuAside menu={header.menu} shop={header.shop} />
+      {/* <SubscribePopup /> */}
+      <div className="sticky top-0 z-10">
+        <Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
+      </div>
+      <Social />
+      <div className="px-2 md:px-20">
+        <main>{children}</main>
+      </div>
       <Suspense>
-        <Await resolve={footer}>
-          {(footer) => <Footer menu={footer?.menu} shop={header?.shop} />}
-        </Await>
+        {/* <Await resolve={footer}> */}
+        <Footer />
+        {/* {(footer) => <Footer menu={footer.menu} shop={header.shop} />} */}
+        {/* </Await> */}
       </Suspense>
+      <script
+        async
+        type="text/javascript"
+        src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=REDMX5"
+      ></script>
     </>
   );
 }
+
 
 function CartAside({cart}: {cart: LayoutProps['cart']}) {
   return (
@@ -59,30 +77,48 @@ function CartAside({cart}: {cart: LayoutProps['cart']}) {
   );
 }
 
-function SearchAside() {
+
+export function SearchAside() {
+  const [asideVisible, setAsideVisible] = useState(true);
+  const toggleAside = () => {
+    setAsideVisible(!asideVisible);
+  };
+  const closeAside = () => {
+    setAsideVisible(false);
+  };
+
   return (
-    <Aside id="search-aside" heading="SEARCH">
-      <div className="predictive-search">
-        <br />
-        <PredictiveSearchForm>
-          {({fetchResults, inputRef}) => (
-            <div>
-              <input
-                name="q"
-                onChange={fetchResults}
-                onFocus={fetchResults}
-                placeholder="Search"
-                ref={inputRef}
-                type="search"
-              />
-              &nbsp;
-              <button type="submit">Search</button>
-            </div>
-          )}
-        </PredictiveSearchForm>
-        <PredictiveSearchResults />
-      </div>
-    </Aside>
+    <>
+      <Aside
+        id="search-aside"
+        heading="SEARCH"
+        isOpen={asideVisible}
+        onClose={closeAside}
+      >
+        <div className="predictive-search">
+          <br />
+          <PredictiveSearchForm>
+            {({ fetchResults, inputRef }) => (
+              <div>
+                <input
+                  name="q"
+                  onChange={fetchResults}
+                  onFocus={fetchResults}
+                  placeholder="Search"
+                  ref={inputRef}
+                  type="search"
+                />
+                &nbsp;
+                <button type="submit" onClick={closeAside}>
+                  Search
+                </button>
+              </div>
+            )}
+          </PredictiveSearchForm>
+          <PredictiveSearchResults />
+        </div>
+      </Aside>
+    </>
   );
 }
 
@@ -94,15 +130,12 @@ function MobileMenuAside({
   shop: HeaderQuery['shop'];
 }) {
   return (
-    menu &&
-    shop?.primaryDomain?.url && (
-      <Aside id="mobile-menu-aside" heading="MENU">
-        <HeaderMenu
-          menu={menu}
-          viewport="mobile"
-          primaryDomainUrl={shop.primaryDomain.url}
-        />
-      </Aside>
-    )
+    <Aside id="mobile-menu-aside" heading="MENU">
+      <HeaderMenu
+        menu={menu}
+        viewport="mobile"
+        primaryDomainUrl={shop.primaryDomain.url}
+      />
+    </Aside>
   );
 }
